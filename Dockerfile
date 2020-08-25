@@ -4,7 +4,7 @@ FROM lsiobase/ubuntu:bionic
 ARG BUILD_DATE
 ARG VERSION
 LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
-LABEL maintainer="aptalca"
+LABEL maintainer="bofalot"
 
 # environment variables
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -29,9 +29,11 @@ RUN \
 	deluge-web \
 	python3-future \
 	python3-requests \
+        python3-pip \
 	p7zip-full \
 	unrar \
 	unzip && \
+ pip3 install deluge-client prometheus_client && \
  echo "**** cleanup ****" && \
  rm -rf \
 	/tmp/* \
@@ -42,5 +44,8 @@ RUN \
 COPY root/ /
 
 # ports and volumes
-EXPOSE 8112 58846 58946 58946/udp
+#  :8112 - WebUI
+#  :9354 - Prometheus exporter
+#  :58846 - Deluge daemon
+EXPOSE 8112 9354 58846 58946 58946/udp
 VOLUME /config /downloads
